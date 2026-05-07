@@ -1,0 +1,17 @@
+services:
+  offmic-web:
+    image: nginx:alpine
+    container_name: offmic-web
+    restart: unless-stopped
+    volumes:
+      - ./site:/usr/share/nginx/html:ro
+      - ./.nginx-default.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - civili-net
+    labels:
+      com.offmic.role: "static-site"
+
+networks:
+  civili-net:
+    external: true
+    name: civili_civili-net
