@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OffMic — P2 Terminal Green</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #000;
+  --bg2: #0d0d0d;
+  --green: #39ff14;
+  --green-dim: #1a7a08;
+  --green-mid: #2bb80a;
+  --text: #b8f0a8;
+  --dim: #4a8040;
+}
+body {
+  font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+  position: relative;
+}
+/* scanlines */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+  pointer-events: none;
+  z-index: 999;
+}
+a { color: var(--green); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+nav {
+  padding: 20px 0;
+  border-bottom: 1px solid #0f2a08;
+}
+nav .inner {
+  max-width: 720px; margin: 0 auto; padding: 0 24px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.logo { color: var(--green); font-size: 14px; letter-spacing: 0.1em; text-shadow: 0 0 8px rgba(57,255,20,0.4); }
+.logo em { color: var(--dim); font-style: normal; }
+nav a { color: var(--dim); font-size: 12px; margin-left: 20px; }
+nav a:hover { color: var(--green); text-decoration: none; }
+
+.hero { padding: 72px 0 48px; }
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+  color: var(--dim);
+  font-size: 11px;
+}
+.dot { width: 8px; height: 8px; border-radius: 50%; }
+.dot-r { background: #ff5f57; }
+.dot-y { background: #ffbd2e; }
+.dot-g { background: #28ca42; }
+.terminal-header span { margin-left: 8px; }
+
+.terminal-box {
+  background: var(--bg2);
+  border: 1px solid #0f2a08;
+  padding: 24px 28px;
+  margin-bottom: 40px;
+}
+.line { display: block; font-size: 14px; margin-bottom: 6px; }
+.line.cmd { color: var(--green); }
+.line.cmd::before { content: "$ "; color: var(--dim); }
+.line.out { color: var(--text); padding-left: 14px; }
+.line.out.hi { color: var(--green); font-weight: bold; text-shadow: 0 0 6px rgba(57,255,20,0.3); }
+.line.comment { color: var(--dim); padding-left: 14px; }
+.line.comment::before { content: "# "; }
+
+.cursor {
+  display: inline-block;
+  width: 9px; height: 14px;
+  background: var(--green);
+  vertical-align: text-bottom;
+  animation: blink .8s step-end infinite;
+  opacity: 0.9;
+}
+@keyframes blink { 0%,100%{opacity:0.9} 50%{opacity:0} }
+
+.ctas { display: flex; gap: 10px; margin-bottom: 64px; flex-wrap: wrap; }
+.btn {
+  font-family: inherit; font-size: 12px;
+  padding: 8px 16px;
+  border: 1px solid;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
+  transition: all .15s;
+}
+.btn-p {
+  border-color: var(--green); color: var(--green); background: transparent;
+  text-shadow: 0 0 6px rgba(57,255,20,0.3);
+  box-shadow: 0 0 6px rgba(57,255,20,0.08);
+}
+.btn-p:hover { background: rgba(57,255,20,0.08); }
+.btn-s { border-color: var(--dim); color: var(--dim); background: transparent; }
+.btn-s:hover { border-color: var(--text); color: var(--text); }
+
+.section { margin-bottom: 52px; }
+.section-title {
+  font-size: 11px; color: var(--dim); margin-bottom: 16px;
+  text-transform: uppercase; letter-spacing: 0.15em;
+}
+.section-title::before { content: "> "; color: var(--green); }
+
+.grid { display: grid; gap: 0; }
+.row {
+  display: grid; grid-template-columns: 160px 1fr; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid #0a1f06; font-size: 13px;
+}
+.row:last-child { border-bottom: none; }
+.k { color: var(--green-mid); }
+.v { color: var(--text); }
+
+.status-row { justify-content: space-between; grid-template-columns: 1fr auto; }
+.tag { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; border: 1px solid; padding: 1px 6px; }
+.tag-done { color: var(--green); border-color: var(--green-dim); }
+.tag-wip { color: #ffbd2e; border-color: #5a4a00; }
+.tag-plan { color: var(--dim); border-color: #1a2a15; }
+
+footer {
+  padding: 28px 0; border-top: 1px solid #0a1f06; margin-top: 72px;
+}
+footer .inner {
+  max-width: 720px; margin: 0 auto; padding: 0 24px;
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--dim); flex-wrap: wrap; gap: 8px;
+}
+footer a { color: var(--dim); }
+footer a:hover { color: var(--green); }
+</style>
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <div class="logo"><em>~/</em>offmic.org</div>
+    <div>
+      <a href="https://github.com/offmic/offmic/blob/main/THREAT-MODEL.md">threat-model</a>
+      <a href="https://github.com/offmic/offmic">github</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="terminal-header">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <span>offmic — zsh</span>
+    </div>
+    <div class="terminal-box">
+      <span class="line cmd">cat offmic.txt</span>
+      <span class="line out hi">End-to-end encrypted async voice interviews.</span>
+      <span class="line out hi">Source-protective by design.</span>
+      <span class="line out">&nbsp;</span>
+      <span class="line out">The server stores ciphertext only.</span>
+      <span class="line out">We cannot read what we hold.</span>
+      <span class="line out">&nbsp;</span>
+      <span class="line comment">open source · AGPL-3.0 · EU hosted · pre-alpha</span>
+      <span class="line cmd">&nbsp;<span class="cursor"></span></span>
+    </div>
+    <div class="ctas">
+      <a href="https://github.com/offmic/offmic" class="btn btn-p">★ star on github</a>
+      <a href="https://github.com/offmic/offmic/blob/main/THREAT-MODEL.md" class="btn btn-s">read threat model →</a>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">features</p>
+    <div class="grid">
+      <div class="row"><span class="k">e2e_encrypted</span><span class="v">AES-256-GCM, key in URL fragment, never sent to server</span></div>
+      <div class="row"><span class="k">browser_only</span><span class="v">source needs no account, no install, no Tor</span></div>
+      <div class="row"><span class="k">open_source</span><span class="v">AGPL-3.0, auditable, audit planned post-MVP</span></div>
+      <div class="row"><span class="k">no_logs</span><span class="v">no analytics, no IP, no metadata — EU hosted</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">not a replacement for</p>
+    <div class="grid">
+      <div class="row"><span class="k">SecureDrop</span><span class="v">state-level adversaries → use <a href="https://securedrop.org">securedrop.org</a></span></div>
+      <div class="row"><span class="k">Signal</span><span class="v">real-time calls → use <a href="https://signal.org">signal.org</a></span></div>
+      <div class="row"><span class="k">Loom</span><span class="v">generic recorder — OffMic is structured journalist↔source flow</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">build status</p>
+    <div class="grid">
+      <div class="row status-row"><span>concept & threat model</span><span class="tag tag-done">done</span></div>
+      <div class="row status-row"><span>cryptographic design</span><span class="tag tag-wip">in review</span></div>
+      <div class="row status-row"><span>MVP code</span><span class="tag tag-wip">in progress</span></div>
+      <div class="row status-row"><span>external audit</span><span class="tag tag-plan">planned</span></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="inner">
+    <span>offmic.org // AGPL-3.0 // pre-alpha</span>
+    <span>
+      <a href="https://github.com/offmic/offmic">github</a> ·
+      <a href="https://github.com/offmic/offmic/blob/main/SECURITY.md">security</a> ·
+      <a href="mailto:contact@offmic.org">contact</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>
